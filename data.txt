@@ -1,0 +1,25 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+
+spark = SparkSession.builder \
+    .appName("Big Data Analysis") \
+    .getOrCreate()
+
+data_path = "path/to/your/large_dataset.csv"  # Update with your dataset path
+df = spark.read.csv(data_path, header=True, inferSchema=True)
+
+df.printSchema()
+df.show(5)
+
+cleaned_df = df.na.drop()
+
+record_count = cleaned_df.count()
+print(f"Total records after cleaning: {record_count}")
+
+grouped_data = cleaned_df.groupBy("column_name").count()  # Replace 'column_name' with your actual column
+grouped_data.show()
+
+output_path = "path/to/output/cleaned_data.csv"  # Update with your desired output path
+cleaned_df.write.csv(output_path, header=True)
+
+spark.stop()
